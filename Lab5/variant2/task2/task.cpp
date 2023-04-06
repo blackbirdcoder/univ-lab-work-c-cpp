@@ -103,7 +103,7 @@ void interactionStore(Shop* shops, int numShops, vector<string> prodNames) {
             cout << "Select menu item: ";
             if (!(cin >> answer)) {
                 cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), 'endl');
+//                cin.ignore(numeric_limits<streamsize>::max(), 'endl');
                 cout << "No such menu item available" << endl;
                 continue;
             }
