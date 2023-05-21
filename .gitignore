@@ -36,5 +36,9 @@ CMakeLists.txt
 cmake-build-debug/
 .idea/
 .idea.bak.old/
-task
 *.old
+/training
+*.bin
+*.txt
+/Lab6
+lesson1
