@@ -1,10 +1,20 @@
+//  *************************
+//  * Laboratory work 7     *
+//  * Variant 2             *
+//  *************************
+//
+// Task:
+// Create a list of department employees: surname, first name and
+// patronymic, number, month of birth. Display information about
+// employees who were born in the given months.
+
 #include <iostream>
 #include <fstream>
 #include <string.h>
 
 using namespace std;
 
-const char* FILE_NAME = "Worker.bin";
+const char* FILE_STORAGE = "Worker.bin";
 
 struct Date {
     int year;
@@ -20,6 +30,15 @@ struct Worker {
 };
 
 void showWorkers(Worker[], const int);
+
+void clearConsole()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
 
 // Select
 void sortWorkers(Worker wrk[], const int sizeWrk)
@@ -41,7 +60,7 @@ void sortWorkers(Worker wrk[], const int sizeWrk)
 
 void addWorkerToBinaryFile()
 {
-    ofstream outFile(FILE_NAME, ios::binary | ios::out | ios::app);
+    ofstream outFile(FILE_STORAGE, ios::binary | ios::out | ios::app);
     Worker newWorker;
 
     cin.ignore();
@@ -64,11 +83,10 @@ void addWorkerToBinaryFile()
 
 int readWorkersFromBinaryFile(Worker wrk[])
 {
-    const char* fileName = "Worker.bin";
-    ifstream inFile(fileName, ios::binary | ios::in);
+    ifstream inFile(FILE_STORAGE, ios::binary | ios::in);
     if (!inFile)
     {
-        cout << "Error!" << endl;
+        cout << "Error no data! First, enter the data of workers!" << endl;
         return 0;
     }
     int num = 0;
@@ -83,13 +101,15 @@ int readWorkersFromBinaryFile(Worker wrk[])
 
 void showWorkers(Worker wrk[], const int sizeWrk)
 {
-    for (int i = 0; i < sizeWrk; ++i) {
+    for (int i = 0; i < sizeWrk; ++i)
+    {
         cout << wrk[i].firstName << " ";
         cout << wrk[i].lastName << " ";
         cout << wrk[i].middleName << " ";
         cout << wrk[i].date.year << "/";
         cout << wrk[i].date.month << "/";
-        cout << wrk[i].date.day << "\n";
+        cout << wrk[i].date.month << "/";
+        cout << wrk[i].date.day << endl;
         cout << "---------------" << endl;
     }
 }
@@ -98,17 +118,21 @@ void saveFilterWorkersIntoTextFile(Worker wrk[], const int sizeWrk)
 {
     const char* resultFile = "Worker.txt";
     int numMonth;
+
     do
     {
         cin.ignore();
-        cout << "Enter month [1-12]:\n";
+        cout << "Enter month [1-12]:" << endl;
         cin >> numMonth;
     }
     while(!(numMonth >= 1 && numMonth <= 12));
+
     cin.ignore();
     ofstream outFile(resultFile);
     sortWorkers(wrk, sizeWrk);
-    for (int i = 0; i < sizeWrk; ++i) {
+
+    for (int i = 0; i < sizeWrk; ++i)
+    {
         if ( wrk[i].date.month == numMonth)
         {
             outFile << wrk[i].firstName << " ";
@@ -126,33 +150,37 @@ void saveFilterWorkersIntoTextFile(Worker wrk[], const int sizeWrk)
             cout << wrk[i].date.day << endl;
         }
     }
+
     outFile.close();
 }
 
-void clearConsole()
+bool presenceCheckFile()
 {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+    ifstream fileStorage(FILE_STORAGE);
+    if (fileStorage.good())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 int main()
 {
     Worker workers[100];
-    int wrkSize;
-    int m;
-    wrkSize = readWorkersFromBinaryFile(workers);
+    int wrkSize = readWorkersFromBinaryFile(workers);;
+    int menuWork;
+    bool status;
     do
     {
-//        system("clear"); // cls
         clearConsole();
         int option;
-        cout << "Select function to run:\n";
-        cout << "1 -> Add Worker To Binary File:\n";
-        cout << "2 -> Read Workers From Binary File:\n";
-        cout << "3 -> Save Sorted Workers Into Text File:\n";
+        cout << "Select function to run:" << endl;
+        cout << "[1] Add Worker To Binary File:" << endl;
+        cout << "[2] Read Workers From Binary File:" << endl;
+        cout << "[3] Save Sorted Workers Into Text File:" << endl;
         cin >> option;
         switch(option)
         {
@@ -163,15 +191,23 @@ int main()
                 wrkSize = readWorkersFromBinaryFile(workers);
                 break;
             case 3:
-                saveFilterWorkersIntoTextFile(workers , wrkSize);
+                status = presenceCheckFile();
+                if (status)
+                {
+                    saveFilterWorkersIntoTextFile(workers , wrkSize);
+                }
+                else
+                {
+                    cout << "There is no file with workers. Write to the workers file!" << endl;
+                }
                 break;
             default:
-                cout << "The number is not correct\n";
+                cout << "The number is not correct" << endl;
         }
-        cout << "Press 0 to exit or any number to continue\n";
-        cin >> m;
+        cout << "Press [0] to exit or any number to continue" << endl;
+        cin >> menuWork;
     }
-    while (m);
-    cout << "Program is finished\n";
+    while (menuWork);
+    cout << "Program is finished" << endl;
     return 0;
 }

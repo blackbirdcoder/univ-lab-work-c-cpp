@@ -40,5 +40,6 @@ cmake-build-debug/
 /training
 *.bin
 *.txt
-/Lab6
-lesson1
+*bak
+.vscode
+build
